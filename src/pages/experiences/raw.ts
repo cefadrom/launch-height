@@ -82,8 +82,7 @@ el.errorResume.on('click', () => {
 
 // ---------- Processing and display ----------
 
-const sensorData = new SensorData();
-sensorData.excludeGravity = excludeGravity;
+const sensorData = new SensorData({ excludeGravity });
 
 
 function processSensorData(data: Cordinates, err?: string) {
