@@ -1,13 +1,26 @@
 import $ from 'jquery';
 import DrawGraph from '../../utils/DrawGraph';
+import SensorData from '../../utils/SensorData';
 import throttle from '../../utils/throttle';
 
 const el = {
+    // Containers
+    result: $('#result'),
+    errorContainer: $('#error-container'),
     body: $('body'),
+    // Display
     acceleration: $('#acceleration'),
     direction: $('#direction'),
     graph: $('#graph') as JQuery<HTMLCanvasElement>,
+    errorBody: $('#error-body'),
+    // Misc
+    errorResume: $('#error-resume') as JQuery<HTMLButtonElement>,
 };
+
+
+const sensorData = new SensorData({ throttle: 25, excludeGravity: true });
+sensorData.subscribe(handleDeviceMotion);
+sensorData.startListening();
 
 /** -1 = down; 0 = no movement; 1 = up */
 export type MotionType = -1 | 0 | 1;
@@ -17,13 +30,28 @@ let motion: MotionType = 0;
 const Graph = new DrawGraph(el.graph);
 Graph.startDrawing();
 
-function handleDeviceMotion(ev: DeviceMotionEvent) {
-    const z = ev.acceleration!.z;
-    if (typeof z === 'number') {
-        el.acceleration.text(z.toFixed(2));
-        updateMotion(z);
-        Graph.addPoint(z);
-    }
+function handleDeviceMotion({ z }: { z: number }, err?: string) {
+
+    if (err)
+        return handleError(err);
+
+    el.acceleration.text(z.toFixed(2));
+    updateMotion(z);
+    Graph.addPoint(z);
+}
+
+
+el.errorResume.on('click', () => {
+    el.errorContainer.addClass('d-none');
+    el.result.removeClass('ghost');
+    sensorData.startListening();
+});
+
+
+function handleError(e: string) {
+    el.errorContainer.removeClass('d-none');
+    el.errorBody.text(e);
+    el.result.addClass('ghost');
 }
 
 

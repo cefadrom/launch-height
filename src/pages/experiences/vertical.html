@@ -31,16 +31,26 @@
 </nav>
 
 <div class="container">
-    <h4>Données</h4>
-    <p>
-        Accélération : <span id="acceleration">0</span>m/s
-        <br>
-        Direction : <span id="direction">-</span>
-    </p>
-    <h4>Graphique</h4>
-    <p>
-        <canvas id="graph" width="500" height="500" style="width: 100%;"></canvas>
-    </p>
+
+    <div id="error-container" class="d-none card bg-danger text-white mb-3 p-3">
+        <h3 class="card-title">Erreur</h3>
+        <p class="card-text" id="error-body"></p>
+        <button id="error-resume" class="card-link btn btn-warning">Réessayer</button>
+    </div>
+
+    <div id="result">
+        <h4>Données</h4>
+        <p>
+            Accélération : <span id="acceleration">0</span>m/s
+            <br>
+            Direction : <span id="direction">-</span>
+        </p>
+        <h4>Graphique</h4>
+        <p>
+            <canvas id="graph" width="500" height="500" style="width: 100%;"></canvas>
+        </p>
+    </div>
+
 </div>
 
 <script src="../../../node_modules/bootstrap/js/src/index.js"></script>
