@@ -1,0 +1,10 @@
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+body.with-nav {
+  padding-top: 4.5rem;
+}
+
+.ghost {
+  opacity: .4;
+  pointer-events: none;
+}

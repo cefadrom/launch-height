@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!--suppress CheckTagEmptyBody -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="../../styles/main.scss">
+    <title>Direction verticale - hauteur du lancé</title>
+</head>
+<body class="with-nav">
+
+<nav class="navbar navbar-dark bg-primary navbar-expand-sm fixed-top">
+    <a class="navbar-brand" href="/">Direction verticale</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-lg-auto ml-sm-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="../index.html">Accueil</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="raw.html">Données brutes</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="fly.html">Temps en l'air</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <h4>Données</h4>
+    <p>
+        Accélération : <span id="acceleration">0</span>m/s
+        <br>
+        Direction : <span id="direction">-</span>
+    </p>
+    <h4>Graphique</h4>
+    <p>
+        <canvas id="graph" width="500" height="500" style="width: 100%;"></canvas>
+    </p>
+</div>
+
+<script src="../../../node_modules/bootstrap/js/src/index.js"></script>
+<script src="vertical.ts"></script>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--suppress CheckTagEmptyBody -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="../../styles/main.scss">
+    <title>Données brutes - hauteur du lancé</title>
+</head>
+<body class="with-nav">
+
+<nav class="navbar navbar-dark bg-primary navbar-expand-sm fixed-top">
+    <span class="navbar-brand">Données brutes</span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-lg-auto ml-sm-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="../index.html">Acueil</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="vertical.html">Direction verticale</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="fly.html">Temps en l'air</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div id="error-container" class="d-none card bg-danger text-white mb-3 p-3">
+        <h3 class="card-title">Erreur</h3>
+        <p class="card-text" id="error-body"></p>
+        <button id="error-resume" class="card-link btn btn-warning">Réessayer</button>
+    </div>
+
+
+    <div id="result" class="d-none">
+        x : <span id="result-x"></span>
+        <br>
+        y : <span id="result-y"></span>
+        <br>
+        z : <span id="result-z"></span>
+        <br>
+        Mesures : <span id="result-datacount"></span>
+        <br>
+        Fréquence d'actualisation : <span id="result-datarate"></span>/s
+        <br>
+
+        <div class="custom-control custom-switch mt-3">
+            <input type="checkbox" class="custom-control-input" id="gravity">
+            <label class="custom-control-label" for="gravity">Exclure la gravité</label>
+        </div>
+        <div class="form-group row">
+            <label for="limit" class="col-sm-6 col-form-label">Limite de fréquence (0 = aucune limite) :</label>
+            <div class="col-sm-6">
+                <input type="number" class="form-control" id="limit" value="0" min="0">
+            </div>
+        </div>
+        <button id="pause" class="btn btn-warning d-block my-2">Pause</button>
+        <button id="reset" class="btn btn-danger d-block my-2">Réinitialiser</button>
+    </div>
+
+</div>
+
+<script src="../../../node_modules/bootstrap/js/src/index.js"></script>
+<script src="raw.ts"></script>
+
+</body>
+</html>
