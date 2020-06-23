@@ -10,14 +10,15 @@ export default class SensorData {
     private throttleValue: number | null;
     private sensorCallback: (ev: DeviceMotionEvent) => any;
     private consecutiveErrors = 0;
+    public errorHandler?: (err: string) => any;
     public excludeGravity: boolean;
 
     /**
-     * @param throttleValue Optional throttle value (in times per second)
+     * @param throttleValue Optional throttle value (in milliseconds)
      * @param excludeGravity Exclude the gravity in the returned values
      */
-    constructor({ throttle: throttleValue = null, excludeGravity = false }: { throttle?: null | number, excludeGravity?: boolean } = {}) {
-        this.throttleValue = throttleValue;
+    constructor({ throttle: throttleValue = 0, excludeGravity = false }: { throttle?: null | number, excludeGravity?: boolean } = {}) {
+        this.throttleValue = this.calculateThrottle(throttleValue);
         this.excludeGravity = excludeGravity;
         this.handleSensorData = this.handleSensorData.bind(this);
         this.startListening = this.startListening.bind(this);
@@ -63,7 +64,19 @@ export default class SensorData {
         clearInterval(this.noDataTimeout);
         this.stopListening();
         this.checkCallback();
-        this.callback!({ x: 0, y: 0, z: 0 }, err);
+        this.consecutiveErrors = 0;
+        if (this.errorHandler)
+            this.errorHandler(err);
+        else
+            this.callback!({ x: 0, y: 0, z: 0 }, err);
+    }
+
+    private calculateThrottle(throttle: number | null) {
+        if (throttle === null || throttle === 0) {
+            return 0;
+        } else {
+            return 1000 / throttle;
+        }
     }
 
     public startListening() {
@@ -72,7 +85,7 @@ export default class SensorData {
             1000,
         );
 
-        this.sensorCallback = throttle(this.handleSensorData, this.throttleValue ? 1000 / this.throttleValue : 0);
+        this.sensorCallback = throttle(this.handleSensorData, this.throttleValue || 0);
 
         if (window.DeviceMotionEvent) {
             try {
@@ -94,7 +107,7 @@ export default class SensorData {
     }
 
     public setThrottle(throttle: number | null) {
-        this.throttleValue = throttle;
+        this.throttleValue = this.calculateThrottle(throttle);
         this.stopListening();
         this.startListening();
     }

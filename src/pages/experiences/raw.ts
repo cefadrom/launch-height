@@ -1,6 +1,6 @@
 import $ from 'jquery';
+import ErrorHandler from '../../utils/ErrorHandler';
 import SensorData, { Cordinates } from '../../utils/SensorData';
-import throttle from '../../utils/throttle';
 
 
 // ---------- DOM elements ----------
@@ -8,20 +8,17 @@ import throttle from '../../utils/throttle';
 const el = {
     // Containers
     result: $('#result'),
-    errorContainer: $('#error-container'),
     // Display
     x: $('#result-x'),
     y: $('#result-y'),
     z: $('#result-z'),
     dataCount: $('#result-datacount'),
     dataRate: $('#result-datarate'),
-    errorBody: $('#error-body'),
     // Settings
     pause: $('#pause'),
     reset: $('#reset'),
     gravity: $('#gravity') as JQuery<HTMLInputElement>,
     limit: $('#limit') as JQuery<HTMLInputElement>,
-    errorResume: $('#error-resume'),
 };
 
 
@@ -34,7 +31,10 @@ let dataRate = 0;
 // Settings
 let paused = false;
 let excludeGravity: boolean = el.gravity.prop('checked') || false;
-let rateLimit = el.limit.val() as number || 0;
+const limitValue = el.limit.val();
+let rateLimit = 0;
+if (typeof limitValue === 'string' && !isNaN(parseInt(limitValue)))
+    rateLimit = parseInt(limitValue);
 
 
 // ---------- Settings handlers ----------
@@ -73,23 +73,19 @@ el.limit.on('change', e => {
     sensorData.setThrottle(value);
 });
 
-el.errorResume.on('click', () => {
-    el.errorContainer.addClass('d-none');
-    el.result.removeClass('ghost');
-    start();
-});
-
 
 // ---------- Processing and display ----------
 
-const sensorData = new SensorData({ excludeGravity });
+const errorHandler = new ErrorHandler(el.result);
+const sensorData = new SensorData({ excludeGravity, throttle: rateLimit });
+sensorData.errorHandler = err => {
+    errorHandler.catchError(err);
+    pause();
+};
+errorHandler.resumeErrorCallback = start;
 
 
-function processSensorData(data: Cordinates, err?: string) {
-
-    if (err)
-        return handleError(err);
-
+function processSensorData(data: Cordinates) {
     dataCount++;
     dataRate++;
     setTimeout(() => dataRate--, 1000);
@@ -107,18 +103,10 @@ function displayData({ x, y, z }: Cordinates) {
 }
 
 
-function handleError(e: string) {
-    el.errorContainer.removeClass('d-none');
-    el.errorBody.text(e);
-    el.result.addClass('ghost');
-    pause();
-}
-
-
 function start() {
     el.result.removeClass('d-none');
     paused = false;
-    sensorData.subscribe(throttle(processSensorData, rateLimit !== 0 ? 1000 / rateLimit : 1));
+    sensorData.subscribe(processSensorData);
     sensorData.startListening();
 }
 
