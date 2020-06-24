@@ -10,6 +10,7 @@ export default class SensorData {
     private throttleValue: number | null;
     private sensorCallback: (ev: DeviceMotionEvent) => any;
     private consecutiveErrors = 0;
+    private listening: boolean = false;
     public errorHandler?: (err: string) => any;
     public excludeGravity: boolean;
 
@@ -80,6 +81,8 @@ export default class SensorData {
     }
 
     public startListening() {
+        if (this.listening) return;
+
         this.noDataTimeout = setTimeout(
             () => this.handleError(`L'accéléromètre n'a retourné aucune donnée après une seconde.`),
             1000,
@@ -96,10 +99,14 @@ export default class SensorData {
         } else {
             this.handleError(`Impossible d'accéder à l'accéléromètre.`);
         }
+
+        this.listening = true;
     }
 
     public stopListening() {
+        if (!this.listening) return;
         window.removeEventListener('devicemotion', this.sensorCallback);
+        this.listening = false;
     }
 
     public subscribe(callback: SensorCallback) {
