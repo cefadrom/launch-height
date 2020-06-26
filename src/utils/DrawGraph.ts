@@ -30,7 +30,7 @@ export default class DrawGraph {
         this.ctx.font = '15px Arial';
         this.ctx.textAlign = 'left';
         this.ctx.textBaseline = 'top';
-        this.ctx.fillText('Accélération (m/s)', 3, 3);
+        this.ctx.fillText('Accélération (m/s²)', 3, 3);
         this.ctx.textAlign = 'center';
         this.ctx.save();
         this.ctx.rotate(90 * Math.PI / 180);
