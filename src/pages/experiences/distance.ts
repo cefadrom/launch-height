@@ -10,6 +10,7 @@ const el = {
     acceleration: $('#acceleration'),
     step: $('#step'),
     motions: $('#motions'),
+    errorPercentage: $('#error-percentage'),
     // Misc
     restart: $('#restart') as JQuery<HTMLButtonElement>,
 };
@@ -36,6 +37,7 @@ function start() {
     savedData = {};
     step = 'wait';
     el.restart.addClass('d-none');
+    el.errorPercentage.addClass('d-none');
     el.motions.text('En attente de données');
     sensorData.startListening();
 }
@@ -86,19 +88,44 @@ function processData() {
         previousTimestamp = +timestamp;
     });
     accelerationHeight = accelerationHeight / 2;    // Acc is the whole way, its half is the height
+    const averageheight = (timeHeight + accelerationHeight) / 2;
 
     // Display
-    el.restart.removeClass('d-none');
-    el.motions.html(`
-        <h6 class="mt-2 mb-1">Enregistrement</h6>
-        ${_.size(savedData)} données en ${deltaTime.toFixed(0)} ms
-        <h6 class="mt-2 mb-1">Distances estimées</h6>
-        Avec le temps : ${timeHeight.toFixed(3)} m
-        <br>
-        Avec l'accélération : ${accelerationHeight.toFixed(3)} m
-        <br>
-        Moyenne des deux : ${((timeHeight + accelerationHeight) / 2).toFixed(3)} m
-    `);
+    displayData();
+
+    function displayData(error?: [ string, string, string ]) {
+        console.log(error);
+        el.restart.removeClass('d-none');
+        el.errorPercentage.removeClass('d-none');
+        el.errorPercentage.off('click');
+        el.motions.html(`
+            <h6 class="mt-2 mb-1">Enregistrement</h6>
+            ${_.size(savedData)} données en ${deltaTime.toFixed(0)} ms
+            <h6 class="mt-2 mb-1">Distances estimées</h6>
+            Avec le temps : ${timeHeight.toFixed(3)} m ${error ? error[0] : ''}
+            <br>
+            Avec l'accélération : ${accelerationHeight.toFixed(3)} m ${error ? error[1] : ''}
+            <br>
+            Moyenne des deux : ${averageheight.toFixed(3)} m ${error ? error[1] : ''}
+        `);
+
+        el.errorPercentage.on('click', () => {
+            const realHeightRes = prompt('Hauteur réelle (en m)');
+            if (!realHeightRes) return;
+            const realHeight = parseFloat(realHeightRes);
+            if (isNaN(realHeight)) return;
+            displayData([
+                getErrorPercentage(timeHeight, realHeight),
+                getErrorPercentage(accelerationHeight, realHeight),
+                getErrorPercentage(averageheight, realHeight),
+            ].map(e => `(${e}% d'erreur)`) as [ string, string, string ]);
+        });
+    }
+}
+
+
+function getErrorPercentage(value: number, exact: number, round = 2) {
+    return Math.round(Math.abs(value - exact) / exact * 100 * (10 ** round)) / (10 ** round);
 }
 
 
