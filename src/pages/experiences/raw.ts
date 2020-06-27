@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import 'bootstrap/js/dist/collapse';
 import ErrorHandler from '../../utils/ErrorHandler';
 import SensorData, { Cordinates } from '../../utils/SensorData';
 

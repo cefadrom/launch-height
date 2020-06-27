@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import 'bootstrap/js/dist/collapse';
 import _ from 'lodash';
 import ErrorHandler from '../../utils/ErrorHandler';
 import SensorData from '../../utils/SensorData';
