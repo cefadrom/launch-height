@@ -41,5 +41,18 @@
 
 <script src="../../node_modules/bootstrap/js/dist/collapse.js"></script>
 
+<script>
+    // 000webhost banner remover
+    window.onload = function () {
+        let list = document.getElementsByTagName('div');
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].innerHTML.includes('000webhost.com')) {
+                list[i].remove();
+            }
+        }
+    };
+</script>
+
+
 </body>
 </html>
