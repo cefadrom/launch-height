@@ -106,7 +106,7 @@ function processData() {
             <br>
             Avec l'accélération : ${accelerationHeight.toFixed(3)} m ${error ? error[1] : ''}
             <br>
-            Moyenne des deux : ${averageheight.toFixed(3)} m ${error ? error[1] : ''}
+            Moyenne des deux : ${averageheight.toFixed(3)} m ${error ? error[2] : ''}
         `);
 
         el.errorPercentage.on('click', () => {
