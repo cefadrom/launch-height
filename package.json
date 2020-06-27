@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "parcel src/pages/**/*.html --port 8000",
-    "build": "parcel build src/pages/**/*.html --public-url ./launch-height/"
+    "build": "parcel build src/pages/**/*.html --public-url /launch-height/"
   },
   "dependencies": {
     "bootstrap": "^4.5.0",
